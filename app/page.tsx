@@ -1,6 +1,11 @@
-import { Container, Categories, Title, SortPopUp, Filters } from '@/components/shared';
-import { ProductCard } from '@/components/shared/product-card';
-import { ProductsGroupList } from '@/components/shared/products-group-list';
+import {
+  Container,
+  Categories,
+  Title,
+  SortPopUp,
+  Filters,
+  ProductsGroupList,
+} from '@/components/shared';
 
 export default function Home() {
   return (
