@@ -50,7 +50,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             placeholder="0"
             min={0}
             max={5000}
-            value={rangeValue[0]}
+            defaultValue={rangeValue[0]}
           />
           <Input
             type="number"
@@ -58,7 +58,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             min={0}
             max={5000}
             placeholder="5000"
-            value={rangeValue[1]}
+            defaultValue={rangeValue[1]}
           />
         </div>
         <div className="relative">
