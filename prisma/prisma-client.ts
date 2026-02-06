@@ -1,15 +1,21 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-const prismaClientSingleton = () => {
-  return new PrismaClient();
+// Глобальный синглтон для Next.js
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
 };
 
-declare const globalThis: {
-  prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>;
-} & typeof global;
+const connectionString = process.env.DATABASE_URL;
 
-export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+if (!connectionString) {
+  throw new Error('DATABASE_URL is not set');
+}
+
+const adapter = new PrismaPg({ connectionString });
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
 
 if (process.env.NODE_ENV !== 'production') {
-  globalThis.prismaGlobal = prisma;
+  globalForPrisma.prisma = prisma;
 }
