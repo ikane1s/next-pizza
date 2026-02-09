@@ -8,12 +8,15 @@ import { RangeSlider } from '../ui/range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
 
 import { useFilterPriceStore } from '@/store/filterPrice';
+import { useFilterIngredients } from '@/hooks/useFilterIngredients';
 
 interface Props {
   className?: string;
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
+  const { ingredients } = useFilterIngredients();
+
   const { rangeValue, setRangeValue } = useFilterPriceStore();
 
   // Обработчики для Input
@@ -75,28 +78,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
         title="Ингредиенты"
         className="mt-5"
         limit={6}
-        defaultItems={[
-          { text: 'Сырный соус', value: '1' },
-          { text: 'Моццарелла', value: '2' },
-          { text: 'Чеснок', value: '3' },
-          { text: 'Солённые огурчики', value: '4' },
-          { text: 'Красный лук', value: '5' },
-          { text: 'Томаты', value: '6' },
-        ]}
-        items={[
-          { text: 'Сырный соус', value: '1' },
-          { text: 'Моццарелла', value: '2' },
-          { text: 'Чеснок', value: '3' },
-          { text: 'Солённые огурчики', value: '4' },
-          { text: 'Красный лук', value: '5' },
-          { text: 'Томаты', value: '6' },
-          { text: 'Сырный соус', value: '1' },
-          { text: 'Моццарелла', value: '2' },
-          { text: 'Чеснок', value: '3' },
-          { text: 'Солённые огурчики', value: '4' },
-          { text: 'Красный лук', value: '5' },
-          { text: 'Томаты', value: '6' },
-        ]}
+        defaultItems={ingredients.slice(0, 6)}
+        items={ingredients}
       />
     </div>
   );
