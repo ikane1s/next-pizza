@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients } = useFilterIngredients();
+  const { ingredients, loading, onAddId, selectedIds } = useFilterIngredients();
 
   const { rangeValue, setRangeValue } = useFilterPriceStore();
 
@@ -80,6 +80,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
         limit={6}
         defaultItems={ingredients.slice(0, 6)}
         items={ingredients}
+        loading={loading}
+        onClickCheckbox={onAddId}
       />
     </div>
   );
