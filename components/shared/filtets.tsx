@@ -1,14 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Title } from './title';
-import { FilterCheckbox } from './filter-checkbox';
 import { Input } from '../ui';
 import { RangeSlider } from '../ui/range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
 
 import { useFilterPriceStore } from '@/store/filterPrice';
 import { useFilterIngredients } from '@/hooks/useFilterIngredients';
+import { useSet } from 'react-use';
 
 interface Props {
   className?: string;
@@ -16,6 +16,9 @@ interface Props {
 
 export const Filters: React.FC<Props> = ({ className }) => {
   const { ingredients, loading, onAddId, selectedIds } = useFilterIngredients();
+
+  const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>([]));
+  const [types, { toggle: toggleTypes }] = useSet(new Set<string>([]));
 
   const { rangeValue, setRangeValue } = useFilterPriceStore();
 
@@ -35,13 +38,39 @@ export const Filters: React.FC<Props> = ({ className }) => {
     setRangeValue(newValues);
   };
 
+  useEffect(() => {
+    console.log(sizes, types);
+  }, [sizes, types]);
+
   return (
     <div className={className}>
       <Title text="Фильтрация" size="sm" className="mb-5 font-bold" />
 
       <div className="flex flex-col gap-4">
-        <FilterCheckbox text="Можно собирать" value="1" />
-        <FilterCheckbox text="Новинки" value="2" />
+        <CheckboxFiltersGroup
+          title="Тип теста"
+          name="pizzaTypes"
+          className="mb-5"
+          onClickCheckbox={toggleTypes}
+          selectedValues={types}
+          items={[
+            { text: 'Тонкое', value: '1' },
+            { text: 'Традиционное', value: '2' },
+          ]}
+        />
+
+        <CheckboxFiltersGroup
+          title="Размеры"
+          name="sizes"
+          className="mb-5"
+          onClickCheckbox={toggleSizes}
+          selectedValues={sizes}
+          items={[
+            { text: '20 см', value: '20' },
+            { text: '30 см', value: '30' },
+            { text: '40 см', value: '40' },
+          ]}
+        />
       </div>
 
       <div className="mt-5 border-y border-y-neutral-100 py-6 pb-7">
@@ -76,12 +105,14 @@ export const Filters: React.FC<Props> = ({ className }) => {
       </div>
       <CheckboxFiltersGroup
         title="Ингредиенты"
+        name="ingredients"
         className="mt-5"
         limit={6}
         defaultItems={ingredients.slice(0, 6)}
         items={ingredients}
         loading={loading}
         onClickCheckbox={onAddId}
+        selectedValues={selectedIds}
       />
     </div>
   );
