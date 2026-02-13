@@ -10,15 +10,39 @@ import { useFilterPriceStore } from '@/store/filterPrice';
 import { useFilterIngredients } from '@/hooks/useFilterIngredients';
 import { useSet } from 'react-use';
 
+import qs from 'qs';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 interface Props {
   className?: string;
 }
 
-export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients, loading, onAddId, selectedIds } = useFilterIngredients();
+interface QueryFilters {
+  priceFrom: number;
+  priceTo: number;
+  pizzaTypes: string;
+  sizes: string;
+  ingredients: string;
+}
 
-  const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>([]));
-  const [types, { toggle: toggleTypes }] = useSet(new Set<string>([]));
+export const Filters: React.FC<Props> = ({ className }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams() as unknown as Map<keyof QueryFilters, string>;
+
+  const { ingredients, loading, onAddId, selectedIds } = useFilterIngredients(
+    searchParams.get('ingredients') ? searchParams.get('ingredients')?.split(',') : [],
+  );
+
+  const [sizes, { toggle: toggleSizes }] = useSet(
+    new Set<string>(searchParams.get('sizes')?.split(',')),
+  );
+  const [types, { toggle: toggleTypes }] = useSet(
+    new Set<string>(
+      searchParams.has('pizzaTypes') ? searchParams.get('pizzaTypes')?.split(',') : [],
+    ),
+  );
+
+  console.log(searchParams.get('sizes'), sizes);
 
   const { rangeValue, setRangeValue } = useFilterPriceStore();
 
@@ -39,8 +63,17 @@ export const Filters: React.FC<Props> = ({ className }) => {
   };
 
   useEffect(() => {
-    console.log(sizes, types);
-  }, [sizes, types]);
+    const filters = {
+      priceFrom: rangeValue[0],
+      priceTo: rangeValue[1],
+      pizzaTypes: Array.from(types),
+      sizes: Array.from(sizes),
+      ingredients: Array.from(selectedIds),
+    };
+
+    const query = qs.stringify(filters, { arrayFormat: 'comma' });
+    router.push(`?${query}`, { scroll: false });
+  }, [router, rangeValue, types, sizes, selectedIds]);
 
   return (
     <div className={className}>

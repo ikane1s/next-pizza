@@ -26,7 +26,6 @@ const RangeSlider = React.forwardRef(
     const handleValueChange = (newValues: number[]) => {
       setRangeValue(newValues);
 
-      console.log('новые значения', newValues);
       if (onValueChange) {
         onValueChange(newValues);
       }

@@ -1,11 +1,15 @@
 import { create } from 'zustand';
 
-interface State {
-  rangeValue: number[];
-  setRangeValue: (value: number[]) => void;
+interface PriceProps {
+  rangeValue: [number, number];
+  setRangeValue: (range: [number, number]) => void;
 }
 
-export const useFilterPriceStore = create<State>()((set) => ({
+export const useFilterPriceStore = create<PriceProps>((set) => ({
   rangeValue: [0, 5000],
-  setRangeValue: (rangeValue: number[]) => set({ rangeValue }),
+  setRangeValue: (rangeValue) => set({ rangeValue }),
 }));
+
+export const initPriceStore = (priceFrom: number, priceTo: number) => {
+  useFilterPriceStore.setState({ rangeValue: [priceFrom, priceTo] });
+};
